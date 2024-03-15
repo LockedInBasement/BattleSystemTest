@@ -1,0 +1,17 @@
+**/_Udemy Card Battler Assets
+_Udemy Card Battler Assets
+
+**/Library
+**/Logs
+**/Packages
+
+.vscode
+.vs
+*.VC.db
+*.opensdf
+*.opendb
+*.sdf
+*.sln
+*.suo
+*.xcodeproj
+*.xcworkspace
