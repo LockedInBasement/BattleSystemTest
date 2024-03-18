@@ -31,6 +31,12 @@ public class Card : MonoBehaviour
     private bool isSelected;
     private Collider cardCollider;
 
+    public LayerMask whatIsDesktop;
+    public LayerMask whatIsPlacement;
+    public bool justPressed;
+
+    public CardPlacePoint assignedPlace;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -63,6 +69,62 @@ public class Card : MonoBehaviour
     {
         transform.position = Vector3.Lerp(transform.position, targetPoint, moveSpeed * Time.deltaTime);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
+
+        if (isSelected)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, 100f, whatIsDesktop))
+            {
+                MoveToPoint(hit.point + new Vector3(0f, 2f, 0f), Quaternion.identity);
+            }
+
+            if(Input.GetMouseButtonDown(1))
+            {
+                ReturnToHand();
+            }
+
+            if (Input.GetMouseButtonDown(0) && justPressed == false)
+            {
+                if (Physics.Raycast(ray, out hit, 100f, whatIsPlacement))
+                {
+                    CardPlacePoint selectedPoint = hit.collider.GetComponent<CardPlacePoint>();
+
+                    if(selectedPoint.activeCard == null && selectedPoint.isPlayerPoint) 
+                    {
+                        if(BattleController.instance.playerMana >= manaCost)
+                        {
+                            selectedPoint.activeCard = this;
+                            assignedPlace = selectedPoint;
+
+                            MoveToPoint(selectedPoint.transform.position, Quaternion.identity);
+
+                            inHand = false;
+                            isSelected = false;
+
+                            handController.RemoveCardFromHand(this);
+
+                            BattleController.instance.SpendPlayerMana(manaCost);    
+                        }
+                        else
+                        {
+                            ReturnToHand();
+
+                            UIController.Instance.ShowManaWarning();
+                        }
+       
+                    }
+                    else
+                    {
+                        ReturnToHand();
+                    }
+                }
+            }
+        }
+
+        justPressed = false;
     }
 
 
@@ -90,7 +152,20 @@ public class Card : MonoBehaviour
 
     private void OnMouseDown()
     {
-        isSelected = true;
-        cardCollider.enabled = false;
+        if (inHand)
+        {
+            isSelected = true;
+            cardCollider.enabled = false;
+
+            justPressed = false;
+        }
+    }
+
+    public void ReturnToHand()
+    {
+        isSelected = false;
+        cardCollider.enabled = true;
+
+        MoveToPoint(handController.cardPosition[handPositon], handController.minPos.rotation);
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 
 public class HandController : MonoBehaviour
 {
-    public List<Card> heldCards = new List<Card>(); 
+    public List<Card> heldCards = new List<Card>();
     public Transform minPos, maxPos;
     public List<Vector3> cardPosition = new List<Vector3>();
 
@@ -17,7 +17,7 @@ public class HandController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void SetCardPositionInHand()
@@ -25,12 +25,12 @@ public class HandController : MonoBehaviour
         cardPosition.Clear();
 
         Vector3 distanceBetweenPoints = Vector3.zero;
-        if(heldCards.Count > 1 ) 
+        if (heldCards.Count > 1)
         {
-            distanceBetweenPoints = (maxPos.position - minPos.position) / (heldCards.Count - 1 );
+            distanceBetweenPoints = (maxPos.position - minPos.position) / (heldCards.Count - 1);
         }
 
-        for( int i = 0; i < heldCards.Count; i++ )
+        for (int i = 0; i < heldCards.Count; i++)
         {
             cardPosition.Add(minPos.position + (distanceBetweenPoints * i));
 
@@ -42,5 +42,19 @@ public class HandController : MonoBehaviour
             heldCards[i].inHand = true;
             heldCards[i].handPositon = i;
         }
+    }
+
+    public void RemoveCardFromHand(Card cardToRemove)
+    {
+        if (heldCards[cardToRemove.handPositon] == cardToRemove)
+        {
+            heldCards.RemoveAt(cardToRemove.handPositon);
+        }
+        else
+        {
+            Debug.LogError("Card at position " + cardToRemove.handPositon + " is not the card being removed from hand");
+        }
+
+        SetCardPositionInHand();
     }
 }
