@@ -9,6 +9,13 @@ public class HandController : MonoBehaviour
     public Transform minPos, maxPos;
     public List<Vector3> cardPosition = new List<Vector3>();
 
+    public static HandController instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
         SetCardPositionInHand();
@@ -55,6 +62,12 @@ public class HandController : MonoBehaviour
             Debug.LogError("Card at position " + cardToRemove.handPositon + " is not the card being removed from hand");
         }
 
+        SetCardPositionInHand();
+    }
+
+    public void AddCardToHand(Card cardToAdd)
+    {
+        heldCards.Add(cardToAdd);
         SetCardPositionInHand();
     }
 }

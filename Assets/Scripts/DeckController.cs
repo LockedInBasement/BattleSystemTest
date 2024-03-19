@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DeckController : MonoBehaviour
 {
-    public static DeckController Instance;
+    public static DeckController instance;
 
     public List<CardScriptableObject> deckToUse = new List<CardScriptableObject>();
 
@@ -12,9 +12,13 @@ public class DeckController : MonoBehaviour
 
     public Card cardToSpawn;
 
+    public int drawCardCost = 2;
+
+    public float waitBetweenCardDraw = 0.25f;
+
     private void Awake()
     {
-        Instance = this;
+        instance = this;
     }
 
     // Start is called before the first frame update
@@ -26,7 +30,10 @@ public class DeckController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        //if(Input.GetKeyDown(KeyCode.L)) 
+        //{
+        //    DrawCardToHand();   
+        //}
     }
 
     public void SetUpDecck()
@@ -36,11 +43,14 @@ public class DeckController : MonoBehaviour
         List<CardScriptableObject> tempDeck = new List<CardScriptableObject>();
         tempDeck.AddRange(deckToUse);
 
-        while (tempDeck.Count > 0)
+        int iterations = 0;
+        while (tempDeck.Count > 0 && iterations <500)
         {
             int selected = Random.Range(0, tempDeck.Count);
             activeCards.Add(tempDeck[selected]);
             tempDeck.RemoveAt(selected);
+
+            iterations++;
         }
     }
 
@@ -52,6 +62,41 @@ public class DeckController : MonoBehaviour
         }
 
         Card newCard = Instantiate(cardToSpawn, transform.position, transform.rotation);
+        newCard.gameObject.SetActive(true);
+        newCard.cardScriptableObject = activeCards[0];
+        newCard.SetupCard();
 
+        activeCards.RemoveAt(0);
+
+        HandController.instance.AddCardToHand(newCard);
+    }
+
+    public void DrawCardForMana()
+    {
+        if(BattleController.instance.playerMana >= drawCardCost)
+        {
+            DrawCardToHand();
+            BattleController.instance.SpendPlayerMana(drawCardCost);    
+        }
+        else
+        {
+            UIController.instance.ShowManaWarning();
+            UIController.instance.drawCardButton.SetActive(false);  
+        }
+    }
+
+    public void DrawMultipleCard(int amountToDraw)
+    {
+        StartCoroutine(DrawMultipleCardCo(amountToDraw));
+    }
+
+    IEnumerator DrawMultipleCardCo(int amountToDraw)
+    {
+        for (int i = 0; i < amountToDraw; i++)
+        {
+            DrawCardToHand();
+
+            yield return new WaitForSeconds(waitBetweenCardDraw);
+        }
     }
 }

@@ -112,7 +112,7 @@ public class Card : MonoBehaviour
                         {
                             ReturnToHand();
 
-                            UIController.Instance.ShowManaWarning();
+                            UIController.instance.ShowManaWarning();
                         }
        
                     }

@@ -5,11 +5,11 @@ using TMPro;
 
 public class UIController : MonoBehaviour
 {
-    public static UIController Instance;
+    public static UIController instance;
 
     public void Awake()
     {
-        Instance = this;
+        instance = this;
 
     }
 
@@ -18,6 +18,8 @@ public class UIController : MonoBehaviour
     public GameObject manaWarning;
     public float manaWarningTime;
     private float manaWarningCounter;
+
+    public GameObject drawCardButton;
 
     // Start is called before the first frame update
     void Start()
@@ -49,5 +51,10 @@ public class UIController : MonoBehaviour
     {
         manaWarning.SetActive(true);
         manaWarningCounter = manaWarningTime;
+    }
+
+    public void DrawCard()
+    {
+        DeckController.instance.DrawCardForMana();
     }
 }

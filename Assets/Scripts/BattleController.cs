@@ -9,6 +9,8 @@ public class BattleController : MonoBehaviour
     public int startingMana = 4, maxMana = 12;
     public int playerMana;
 
+    public int startingCardsAmount= 5;
+
     private void Awake()
     {
         instance = this;
@@ -18,7 +20,9 @@ public class BattleController : MonoBehaviour
     void Start()
     {
         playerMana = startingMana;
-        UIController.Instance.SetPlayerManaText(playerMana);
+        UIController.instance.SetPlayerManaText(playerMana);
+
+        DeckController.instance.DrawMultipleCard(startingCardsAmount);
     }
 
     // Update is called once per frame
@@ -36,6 +40,6 @@ public class BattleController : MonoBehaviour
             playerMana = 0;
         }
 
-        UIController.Instance.SetPlayerManaText(playerMana);
+        UIController.instance.SetPlayerManaText(playerMana);
     }
 }
