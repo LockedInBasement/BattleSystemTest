@@ -11,6 +11,12 @@ public class BattleController : MonoBehaviour
 
     public int startingCardsAmount= 5;
 
+    public enum TurnOrder { playerActive, playerCardAttacks, enemyActivve, enemyCardsAttacks }
+    public TurnOrder currentPhase;
+    public int currentPlayerMaxMana;
+
+    public int cardsToDrawPerTurn = 2;
+
     private void Awake()
     {
         instance = this;
@@ -19,8 +25,9 @@ public class BattleController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerMana = startingMana;
-        UIController.instance.SetPlayerManaText(playerMana);
+        currentPlayerMaxMana = startingMana;
+
+        FillPlayerMana();
 
         DeckController.instance.DrawMultipleCard(startingCardsAmount);
     }
@@ -41,5 +48,53 @@ public class BattleController : MonoBehaviour
         }
 
         UIController.instance.SetPlayerManaText(playerMana);
+    }
+
+    public void FillPlayerMana()
+    {
+        playerMana = currentPlayerMaxMana;
+        UIController.instance.SetPlayerManaText(playerMana);
+    }
+
+    public void AdvanceTurn()
+    {
+        currentPhase++;
+
+        if((int)currentPhase >= System.Enum.GetValues(typeof(TurnOrder)).Length) { currentPhase = 0; }
+
+        switch (currentPhase)
+        {
+            case TurnOrder.playerActive:
+                UIController.instance.endTurnButton.SetActive(true);
+                UIController.instance.drawCardButton.SetActive(true);
+
+                if(currentPlayerMaxMana<maxMana)
+                {
+                    currentPlayerMaxMana++;
+                }
+
+                FillPlayerMana();
+
+                DeckController.instance.DrawMultipleCard(cardsToDrawPerTurn);
+
+                break;
+            case TurnOrder.playerCardAttacks:
+                AdvanceTurn();
+                break;
+            case TurnOrder.enemyActivve:
+                AdvanceTurn();
+                break;
+            case TurnOrder.enemyCardsAttacks:
+                AdvanceTurn();
+                break;
+        }
+    }
+
+    public void EndPlyerTurn()
+    {
+        UIController.instance.endTurnButton.SetActive(false);
+        UIController.instance.drawCardButton.SetActive(false);
+
+        AdvanceTurn();
     }
 }

@@ -19,7 +19,7 @@ public class UIController : MonoBehaviour
     public float manaWarningTime;
     private float manaWarningCounter;
 
-    public GameObject drawCardButton;
+    public GameObject drawCardButton, endTurnButton;
 
     // Start is called before the first frame update
     void Start()
@@ -56,5 +56,11 @@ public class UIController : MonoBehaviour
     public void DrawCard()
     {
         DeckController.instance.DrawCardForMana();
+    }
+
+    public void EndPlyerTurn()
+    {
+        UIController.instance.endTurnButton.SetActive(false);
+        BattleController.instance.EndPlyerTurn();
     }
 }

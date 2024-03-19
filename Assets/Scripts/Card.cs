@@ -88,7 +88,7 @@ public class Card : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0) && justPressed == false)
             {
-                if (Physics.Raycast(ray, out hit, 100f, whatIsPlacement))
+                if (Physics.Raycast(ray, out hit, 100f, whatIsPlacement) && BattleController.instance.currentPhase == BattleController.TurnOrder.playerActive)
                 {
                     CardPlacePoint selectedPoint = hit.collider.GetComponent<CardPlacePoint>();
 
@@ -120,6 +120,10 @@ public class Card : MonoBehaviour
                     {
                         ReturnToHand();
                     }
+                }
+                else
+                {
+                    ReturnToHand();
                 }
             }
         }
