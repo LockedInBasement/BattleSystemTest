@@ -90,6 +90,9 @@ public class EnemyController : MonoBehaviour
             }
         }
 
+        CardScriptableObject selectedCard = null;
+        int iterations = 0;
+
         switch (enemyAIType)
         {
             case AIType.placeFromDeck:
@@ -107,6 +110,15 @@ public class EnemyController : MonoBehaviour
                 break;
 
             case AIType.handRandomPlace:
+
+                selectedCard = SelectedCardToPlay();
+
+                if(selectedCard = null)
+                {
+                    PlayCard(selectedCard, selectedPoint);
+                }
+
+
                 break;
 
             case AIType.handDefensive:
@@ -136,5 +148,45 @@ public class EnemyController : MonoBehaviour
             cardsInHand.Add(activeCards[0]);
             activeCards.RemoveAt(0);
         }
+    }
+
+    public void PlayCard(CardScriptableObject cardScriptableObject, CardPlacePoint cardPlacePoint)
+    {
+        Card newCard = Instantiate(cardToSpawn, cardSpawnPoint.position, cardSpawnPoint.rotation);
+        newCard.cardScriptableObject = cardScriptableObject;
+       
+        newCard.SetupCard();
+        newCard.MoveToPoint(cardPlacePoint.transform.position, cardPlacePoint.transform.rotation);
+
+        cardPlacePoint.activeCard = newCard;
+        newCard.assignedPlace = cardPlacePoint;
+
+        cardsInHand.Remove(cardScriptableObject);
+
+        BattleController.instance.SpendEnemyMana(cardScriptableObject.manaCost);
+    }
+
+    CardScriptableObject SelectedCardToPlay()
+    {
+        CardScriptableObject cardToPlay = null;
+
+        List<CardScriptableObject> cardsToPlay = new List<CardScriptableObject>();  
+
+        foreach(CardScriptableObject card in cardsInHand)
+        {
+            if(card.manaCost <= BattleController.instance.enemyMana)
+            {
+                cardsToPlay.Add(card);
+            }
+        }
+        
+        if(cardsToPlay.Count > 0)
+        {
+            int selected = Random.Range(0, cardsToPlay.Count);
+
+            cardToPlay = cardsToPlay[selected];
+        }
+
+        return cardToPlay;
     }
 }
