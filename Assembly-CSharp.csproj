@@ -63,10 +63,12 @@
     <Compile Include="Assets\Scripts\HandController.cs" />
     <Compile Include="Assets\Scripts\CardsPointsController.cs" />
     <Compile Include="Assets\Scripts\DeckController.cs" />
+    <Compile Include="Assets\Scripts\EnemyController.cs" />
     <Compile Include="Assets\Scripts\CardPlacePoint.cs" />
     <Compile Include="Assets\Scripts\UIController.cs" />
     <Compile Include="Assets\Scripts\Card.cs" />
     <Compile Include="Assets\Scripts\CardScriptableObject.cs" />
+    <Compile Include="Assets\Scripts\UIDamageIndicator.cs" />
     <Compile Include="Assets\Scripts\BattleController.cs" />
   </ItemGroup>
   <ItemGroup>

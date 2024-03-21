@@ -39,6 +39,8 @@ public class Card : MonoBehaviour
 
     public CardPlacePoint assignedPlace;
 
+    public Animator animator;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -189,8 +191,14 @@ public class Card : MonoBehaviour
 
             assignedPlace.activeCard = null;
 
-            Destroy(gameObject);
+            MoveToPoint(BattleController.instance.discardPoint.position, BattleController.instance.discardPoint.rotation);
+
+            animator.SetTrigger("Jump");
+
+            Destroy(gameObject, 5f);
         }
+
+        animator.SetTrigger("Hurt");
 
         UpdateCardDisplay();
     }
